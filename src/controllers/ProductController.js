@@ -48,7 +48,7 @@ const getAllProduct = async (req, res) => {
 
         let query = {};
 
-        const { search, category, minPrice, maxPrice, sort } = req.query;
+        const { search, category, minPrice, maxPrice, sort, page, limit } = req.query;
 
         if(search) {
             query.name = {
@@ -89,11 +89,26 @@ const getAllProduct = async (req, res) => {
             sortOption = { createdAt: 1 };
         }
 
+
+        //Pagination
+        const currentPage = Number(page) || 1;
+        const pageLimit = Number(limit) || 10;
+
+        const skip = (currentPage - 1)*pageLimit;
+
+        const totalProducts = await Product.countDocuments(query);
+
         //fetching products
-        const products = await Product.find(query).sort(sortOption);  //.sort => newest products appears first
+        const products = await Product.find(query)
+        .sort(sortOption)
+        .skip(skip)
+        .limit(pageLimit);
 
         return res.status(200).json({
             success: true,
+            currentPage,
+            totalPage: Math.ceil(totalProducts/ pageLimit),
+            totalProducts,
             count: products.length,
             products
         });

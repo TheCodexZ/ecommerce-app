@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 
 
 
+
 const app = express();
 
 app.use(express.json());
@@ -19,10 +20,14 @@ app.use(
 // Import Routes
 const authRoutes = require("./routes/authRoutes");
 const ProductRoutes = require("./routes/ProductRoutes");
+const cartRoutes = require("./routes/cartRoutes")
+const orderRoutes = require("./routes/orderRoutes");
 
 // Use Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", ProductRoutes)
+app.use("/api/orders",orderRoutes);
+app.use("/api/cart",  cartRoutes)
 
 app.get("/", (req, res) => {
   res.send("API Running...");
