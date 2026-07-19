@@ -1,6 +1,8 @@
 const Order = require("../models/Order");
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
+const mongoose = require("mongoose");
+
 
 const placeOrder = async (req, res) => {
     try {
@@ -178,7 +180,9 @@ const updateOrderStatus = async (req, res) => {
             });
         }
 
-        const order = await Order.findById(id);
+        const order = await Order.findById(id)
+            .populate("user", "name email")
+            .populate("items.product", "name image price");
 
         if (!order) {
             return res.status(404).json({
@@ -189,9 +193,10 @@ const updateOrderStatus = async (req, res) => {
 
         const validStatus = [
             "Pending",
+            "Processing",
             "Shipped",
-            "Delivered"
-        ];
+            "Delivered",
+        ]
 
         if (!validStatus.includes(status)) {
             return res.status(400).json({
@@ -199,6 +204,37 @@ const updateOrderStatus = async (req, res) => {
                 message: "Invalid order status"
             });
         }
+
+        const statusFlow = {
+            Pending: "Processing",
+            Processing: "Shipped",
+            Shipped: "Delivered"
+        };
+
+        // Cannot update delivered order
+        if (order.status === "Delivered") {
+            return res.status(400).json({
+                success: false,
+                message: "Delivered order cannot be updated"
+            });
+        }
+
+        // Cannot update cancelled order
+        if (order.status === "Cancelled") {
+            return res.status(400).json({
+                success: false,
+                message: "Cancelled order cannot be updated"
+            });
+        }
+
+        // Next Status Validation
+        if (status !== statusFlow[order.status]) {
+            return res.status(400).json({
+                success: false,
+                message: `Order can only move from ${order.status} to ${statusFlow[order.status]}`
+            });
+        }
+
 
         order.status = status;
 
