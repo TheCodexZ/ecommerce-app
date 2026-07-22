@@ -3,6 +3,7 @@ const router = express.Router();
 
 const { createProduct, getAllProduct, getSingleProduct, updateProduct, deleteProduct } = require("../controllers/ProductController");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
+const upload = require("../middleware/upload");
 
 //from reviewController
 const {
@@ -13,7 +14,7 @@ const {
 
 
 //admin routes
-router.post("/", protect, adminOnly, createProduct);
+router.post("/", protect, adminOnly, upload.single("image"), createProduct);
 router.put("/:id", protect, adminOnly, updateProduct);
 router.delete("/:id", protect, adminOnly, deleteProduct);
 

@@ -135,3 +135,10 @@ const changePassword = async (req, res) => {
         })
     }
 }
+
+
+module.exports = {
+    getMyProfile,
+    updateProfile,
+    changePassword
+}

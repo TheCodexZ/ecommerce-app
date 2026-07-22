@@ -1,17 +1,21 @@
 const Product = require("../models/Product");
 const mongoose = require("mongoose");
+const uploadImage = require("../utils/cloudinaryUpload");
+
 
 const createProduct = async (req, res) => {
     try {
+
+        console.log("BODY:", req.body);
+console.log("FILE:", req.file);
         const { name, 
                 description, 
                 price,
                 category, 
-                image, 
                 stock} = req.body;
 
-        if( !name || !description || !price || !category || 
-            !image || !stock ) {
+        if( !name || !description || !price || !category 
+            || !stock ) {
             return res.status(400).json({
                 success: false,
                 message: "plz fill all the field"
@@ -19,13 +23,26 @@ const createProduct = async (req, res) => {
         }
         const createdBy = req.user.id;
 
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "Please upload an image"
+            });
+        }
+
+        //upload to cloudinary
+        const result = await uploadImage(req.file.buffer);
+
         const product = await Product.create({
             name,
             description,
             price,
             category,
-            image,
             stock,
+            image: {
+                url: result.secure_url,
+                public_id: result.public_id
+            },
             createdBy
         });
 
