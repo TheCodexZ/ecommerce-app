@@ -1,0 +1,7 @@
+0000000000000000000000000000000000000000 6e6fdb11d9bc6b47a050b4116b8ed5ea90ef0722 digvijay <digvijaybasunde24@gmail.com> 1783853861 +0530	commit (initial): Implement authentication and product API
+6e6fdb11d9bc6b47a050b4116b8ed5ea90ef0722 6e6fdb11d9bc6b47a050b4116b8ed5ea90ef0722 digvijay <digvijaybasunde24@gmail.com> 1783854500 +0530	Branch: renamed refs/heads/master to refs/heads/main
+6e6fdb11d9bc6b47a050b4116b8ed5ea90ef0722 11d4b1cee1bd9c0491451bb7dabce5d79024c100 digvijay <digvijaybasunde24@gmail.com> 1784359718 +0530	commit: Complete cart and order management module
+11d4b1cee1bd9c0491451bb7dabce5d79024c100 59f87d0baebe40318e1fcdc076aecc064b9eefe6 digvijay <digvijaybasunde24@gmail.com> 1784367475 +0530	commit: Complete user profile management module
+59f87d0baebe40318e1fcdc076aecc064b9eefe6 568f94e546a58cf5828391601233cbefbb125a00 digvijay <digvijaybasunde24@gmail.com> 1784468371 +0530	commit: Complete backend v1
+568f94e546a58cf5828391601233cbefbb125a00 cc496e0bfd29633a62264912ac7ca26ac14d4925 digvijay <digvijaybasunde24@gmail.com> 1784721235 +0530	commit: Updated module
+cc496e0bfd29633a62264912ac7ca26ac14d4925 fbe863a447b85de34b2844d5a25d168107465152 digvijay <digvijaybasunde24@gmail.com> 1786192522 +0530	commit: Backend updated
