@@ -12,6 +12,4 @@ router.delete("/:id",protect, deleteCart);
 router.get("/",protect, getMyCart);
 
 
-
-
 module.exports = router;

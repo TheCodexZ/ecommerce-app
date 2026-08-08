@@ -24,6 +24,8 @@ const cartRoutes = require("./routes/cartRoutes")
 const orderRoutes = require("./routes/orderRoutes");
 const userRoutes = require("./routes/UserRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 // Use Routes
 app.use("/api/auth", authRoutes);
@@ -32,6 +34,9 @@ app.use("/api/orders",orderRoutes);
 app.use("/api/cart",  cartRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/payment", paymentRoutes);
+app.use("/api/admin", adminRoutes);
+
 
 
 app.get("/", (req, res) => {

@@ -1,13 +1,10 @@
 const Product = require("../models/Product");
 const mongoose = require("mongoose");
 const uploadImage = require("../utils/cloudinaryUpload");
-
+const { v2: cloudinary } = require("cloudinary");
 
 const createProduct = async (req, res) => {
     try {
-
-        console.log("BODY:", req.body);
-console.log("FILE:", req.file);
         const { name, 
                 description, 
                 price,
@@ -179,6 +176,7 @@ const updateProduct = async (req, res) => {
     try {
 
         const { id } = req.params;
+
         if(!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({
                 success: false,
@@ -186,14 +184,7 @@ const updateProduct = async (req, res) => {
             })
         };
 
-        const product = await Product.findByIdAndUpdate(
-            id,
-            req.body,
-            {
-                new: true,
-                runValidators: true,
-            }
-        );
+        const product = await Product.findById(id);
 
         if(!product) {
             return res.status(404).json({
@@ -201,6 +192,43 @@ const updateProduct = async (req, res) => {
                 message: "Product not found",
             });
         }
+
+        //get updated fields
+        const {
+            name, 
+            description, 
+            price, 
+            category, 
+            stock 
+        } = req.body;
+
+
+        // Update text fields
+        product.name = name ?? product.name;
+        product.description = description ?? product.description;
+        product.price = price ?? product.price;
+        product.category = category ?? product.category;
+        product.stock = stock ?? product.stock;
+
+        // Check if new image uploaded
+        if (req.file) {
+
+            // Delete old image from Cloudinary
+            await cloudinary.uploader.destroy(product.image.public_id);
+
+            // Upload new image
+            const result = await uploadImage(req.file.buffer);
+
+            // Save new image details
+            product.image = {
+                url: result.secure_url,
+                public_id: result.public_id
+            };
+        }
+
+        await product.save();
+
+
 
         return res.status(200).json({
             success: true,
@@ -227,7 +255,7 @@ const deleteProduct = async (req, res) => {
             });
         }
 
-        const product = await Product.findByIdAndDelete(id);
+        const product = await Product.findById(id);
 
         if(!product) {
             return res.status(404).json({
@@ -235,6 +263,17 @@ const deleteProduct = async (req, res) => {
                 message: "Product not found!"
             });
         }
+        
+        // Delete the Cloudinary image first because after deleting the product
+        // we lose access to image.public_id, which is required to remove the image.    
+        
+        
+        if (product.image?.public_id) {   //?. prevents an error if image is null or undefined.
+            await cloudinary.uploader.destroy(product.image.public_id);
+        }
+        await product.deleteOne();
+
+
 
         return res.status(200).json({
             success: true,

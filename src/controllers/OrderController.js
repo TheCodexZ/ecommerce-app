@@ -8,6 +8,30 @@ const placeOrder = async (req, res) => {
     try {
 
         const user = req.user.id;
+        const { shippingAddress, paymentMethod } = req.body;
+
+        //validating shipping address
+        if(!shippingAddress ||
+            !shippingAddress.fullName ||
+            !shippingAddress.phone ||
+            !shippingAddress.address ||
+            !shippingAddress.city ||
+            !shippingAddress.state ||
+            !shippingAddress.pincode
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Fill complete shipping address!"
+            })
+        }
+
+        if(!["COD", "Online"].includes(paymentMethod)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid payment method"
+            })
+        }
+
         const cartItems = await Cart.find({ user }).populate("product");
 
         if (cartItems.length === 0) {
@@ -51,7 +75,9 @@ const placeOrder = async (req, res) => {
         const order = await Order.create({
             user,
             items: orderItems,
-            totalAmount
+            totalAmount,
+            shippingAddress,
+            paymentMethod
         });
 
         for(const item of cartItems) {

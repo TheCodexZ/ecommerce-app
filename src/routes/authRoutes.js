@@ -3,7 +3,7 @@ const router = express.Router();
 
 const { registerUser, loginUser, logoutUser } = require("../controllers/authController");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
-const { createProduct, getAllProduct } = require("../controllers/ProductController")
+
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
@@ -16,9 +16,7 @@ router.get("/admin", protect, adminOnly, (req, res) => {
     });
 });
 
-router.post(
-    "/", protect, adminOnly, createProduct
-);
+
 
 module.exports = router;
 
